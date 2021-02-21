@@ -9,7 +9,7 @@ export const PublicRoutes = () => {
     <PublicStack.Navigator
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#f4511e',
+          backgroundColor: '#375675',
         },
         headerTintColor: '#fff',
         headerTitleStyle: {
@@ -24,6 +24,7 @@ export const PublicRoutes = () => {
           title: 'CryptoTracker Pro',
           headerShown: true,
           headerBackTitle: '',
+          headerStatusBarHeight: 70,
         }}
       />
       <PublicStack.Screen
@@ -34,6 +35,7 @@ export const PublicRoutes = () => {
           title: '',
           headerShown: true,
           headerBackTitle: 'Back to list',
+          headerStatusBarHeight: 70,
         }}
       />
     </PublicStack.Navigator>
