@@ -1,7 +1,9 @@
+import { URL } from '../services/Constants';
+import { fetchCryptoAPI } from '../services/Services';
 import {
   FETCH_CRYPTOLIST_BEGIN,
   FETCH_CRYPTOLIST_FAILURE,
-  FETCH_CRYPTOLIST_SUCCESS,
+  FETCH_CRYPTOLIST_SUCCESS
 } from './ActionConstants';
 
 export const fetchListBegin = () => ({
@@ -17,13 +19,19 @@ export const fetchListSuccess = (data) => {
 
 export const fetchListFailure = (error) => ({
   type: FETCH_CRYPTOLIST_FAILURE,
-  payload: {error},
+  payload: error,
 });
 
-export function fetchList() {
-  return (dispatch, getState) => {
-    //redux passes dispatch & getState as args into thunk functions
+export const fetchCryptoList = () => {
+  return function (dispatch) {
     dispatch(fetchListBegin());
-    return [];
+    return fetchCryptoAPI(URL.FETCH_URL)
+      .then((data) => {
+        dispatch(fetchListSuccess(data));
+      })
+      .catch((err) => {
+        //Dispatch error action
+        dispatch(fetchListFailure(err));
+      });
   };
-}
+};

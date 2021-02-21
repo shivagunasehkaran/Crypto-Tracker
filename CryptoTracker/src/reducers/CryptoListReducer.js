@@ -5,11 +5,8 @@ import {
 } from '../actions/ActionConstants';
 
 const initialState = {
-  users: [],
   loading: false,
   error: null,
-  user: '',
-  user1: '',
 };
 
 export default function CryptoListReducer(state = initialState, action) {
@@ -30,7 +27,7 @@ export default function CryptoListReducer(state = initialState, action) {
       return {
         ...state,
         loading: false,
-        items: action.payload.items,
+        items: action.payload,
       };
 
     case FETCH_CRYPTOLIST_FAILURE:
@@ -45,7 +42,6 @@ export default function CryptoListReducer(state = initialState, action) {
         ...state,
         loading: false,
         error: 'FAILED TO LOAD,..,.', //action.payload.error,
-        items: [],
       };
 
     default:
