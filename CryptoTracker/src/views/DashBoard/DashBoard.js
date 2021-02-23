@@ -1,14 +1,13 @@
 import React from 'react';
 import {
   FlatList,
-  Image,
   RefreshControl, ScrollView, StyleSheet,
   Text,
   TouchableOpacity,
   View
 } from 'react-native';
+import Icon from 'react-native-vector-icons/FontAwesome5';
 import { connect } from 'react-redux';
-import * as Images from '../../../src/assets/Images';
 import { fetchCryptoList, fetchIndividualCryptoList } from '../../actions/CryptoListActions';
 
 class DashBoard extends React.Component {
@@ -47,7 +46,8 @@ class DashBoard extends React.Component {
       <>
         <View style={styles.container}>
           <View style={styles.imgContainer}>
-            <Image style={styles.tinyLogo} source={Images.Images.bitcoin} />
+            {/* <Image style={styles.tinyLogo} source={bitcoin} /> */}
+            <Icon name="bitcoin" type="ionicon" size={45} />
             <View style={styles.text}>
               <Text style={styles.slug}>{row.slug}</Text>
               <Text style={styles.symbol}>
@@ -117,7 +117,7 @@ export default connect(mapStateToProps, mapDispatchToProps)(DashBoard);
 const styles = StyleSheet.create({
   container: { flex: 1, flexDirection: 'row' },
   imgContainer: { flex: 1, margin: 20, flexDirection: 'row' },
-  tinyLogo: { width: 50, height: 50 },
+  tinyLogo: { width: 100, height: 100 },
   text: { flex: 1, flexDirection: 'column', paddingLeft: 15, marginTop: 5 },
   slug: { fontSize: 15 },
   symbol: { fontSize: 12, color: 'gray', marginTop: 5 },
