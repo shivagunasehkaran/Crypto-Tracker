@@ -1,11 +1,12 @@
 import React from 'react';
 import {
-  FlatList,
+  Alert, FlatList,
   RefreshControl, ScrollView, StyleSheet,
   Text,
   TouchableOpacity,
   View
 } from 'react-native';
+import Swipeout from 'react-native-swipeout';
 import Icon from 'react-native-vector-icons/FontAwesome5';
 import { connect } from 'react-redux';
 import { fetchCryptoList, fetchIndividualCryptoList } from '../../actions/CryptoListActions';
@@ -41,9 +42,34 @@ class DashBoard extends React.Component {
     );
   };
 
+  showDeleteConfirmation = () => {
+    Alert.alert(
+      'Delete',
+      'Delete a todoList',
+      [
+        {
+          text: 'No', onPress: () => { },//Do nothing
+          style: 'cancel'
+        },
+        {
+          text: 'Yes', onPress: () => {
+            alert(`Item deleted!`);
+          }
+        },
+      ],
+      { cancelable: true }
+    );
+  };
+
   renderRow(row) {
     return (
-      <>
+      <Swipeout right={[
+        {
+          text: 'Delete',
+          backgroundColor: 'rgb(217, 80, 64)',
+          onPress: () => this.showDeleteConfirmation()
+        }
+      ]} autoClose={true}>
         <View style={styles.container}>
           <View style={styles.imgContainer}>
             {/* <Image style={styles.tinyLogo} source={bitcoin} /> */}
@@ -68,13 +94,14 @@ class DashBoard extends React.Component {
             </View>
           </View>
         </View>
-      </>
+      </Swipeout >
     );
   }
 
   render() {
     return (
       <ScrollView
+        style={{ backgroundColor: 'white' }}
         refreshControl={
           <RefreshControl
             refreshing={this.state.refreshing}
@@ -82,22 +109,20 @@ class DashBoard extends React.Component {
           />
         }
         contentContainerStyle={{ flexGrow: 1 }}>
-        <View>
-          <FlatList
-            data={this.props.cryptoCurrencyDetails}
-            renderItem={({ item, index }) => this.renderRow(item, index)}
-            keyExtractor={this.keyExtractor}
-            ItemSeparatorComponent={this.FlatListItemSeparator}
-          />
-          <TouchableOpacity
-            onPress={() => this.props.navigation.navigate('AddCryptoCurrency')}
-            style={styles.addButton}>
-            <Text style={styles.addText}>
-              {'+ Add a Cryptocurrency'}
-            </Text>
-          </TouchableOpacity>
-        </View>
-        <View style={styles.addButton}></View>
+        <FlatList
+          data={this.props.cryptoCurrencyDetails}
+          renderItem={({ item, index }) => this.renderRow(item, index)}
+          keyExtractor={this.keyExtractor}
+          ItemSeparatorComponent={this.FlatListItemSeparator}
+        />
+        <TouchableOpacity
+          onPress={() => this.props.navigation.navigate('AddCryptoCurrency')}
+          style={styles.addButton}>
+          <Text style={styles.addText}>
+            {'+ Add a Cryptocurrency'}
+          </Text>
+        </TouchableOpacity>
+        <View style={{ marginBottom: 50 }}></View>
       </ScrollView>
     );
   }
@@ -118,7 +143,7 @@ const mapDispatchToProps = (dispatch) => ({
 export default connect(mapStateToProps, mapDispatchToProps)(DashBoard);
 
 const styles = StyleSheet.create({
-  container: { flex: 1, flexDirection: 'row' },
+  container: { flex: 1, flexDirection: 'row', backgroundColor: 'white' },
   imgContainer: { flex: 1, margin: 20, flexDirection: 'row' },
   tinyLogo: { width: 100, height: 100 },
   text: { flex: 1, flexDirection: 'column', paddingLeft: 15, marginTop: 5 },
