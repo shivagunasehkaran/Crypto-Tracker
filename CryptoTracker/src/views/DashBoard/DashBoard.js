@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  Alert, FlatList,
+  ActivityIndicator, Alert, FlatList,
   RefreshControl, ScrollView, StyleSheet,
   Text,
   TouchableOpacity,
@@ -16,16 +16,20 @@ class DashBoard extends React.Component {
     super(props);
     this.state = {
       refreshing: false,
-      cryptoValue: 'bitcoin'
+      cryptoValue: 'bitcoin',
+      loading: false,
     };
   }
 
-  componentDidMount = () => {
+  componentDidMount = async () => {
+    await this.setState({ loading: true });
     this.props.fetchCryptoList();
     this.props.fetchIndividualCryptoList(this.state.cryptoValue);
   };
 
   onRefresh = () => {
+    this.setState({ loading: false });
+
     this.props.fetchCryptoList();
     this.props.fetchIndividualCryptoList(this.state.cryptoValue);
   };
@@ -100,30 +104,37 @@ class DashBoard extends React.Component {
 
   render() {
     return (
-      <ScrollView
-        style={{ backgroundColor: 'white' }}
-        refreshControl={
-          <RefreshControl
-            refreshing={this.state.refreshing}
-            onRefresh={this.onRefresh}
-          />
+      <>
+        {
+          this.state.loading && <View style={{ backgroundColor: 'white' }}>
+            <ActivityIndicator size={'small'} />
+          </View>
         }
-        contentContainerStyle={{ flexGrow: 1 }}>
-        <FlatList
-          data={this.props.cryptoCurrencyDetails}
-          renderItem={({ item, index }) => this.renderRow(item, index)}
-          keyExtractor={this.keyExtractor}
-          ItemSeparatorComponent={this.FlatListItemSeparator}
-        />
-        <TouchableOpacity
-          onPress={() => this.props.navigation.navigate('AddCryptoCurrency')}
-          style={styles.addButton}>
-          <Text style={styles.addText}>
-            {'+ Add a Cryptocurrency'}
-          </Text>
-        </TouchableOpacity>
-        <View style={{ marginBottom: 50 }}></View>
-      </ScrollView>
+        <ScrollView
+          style={{ backgroundColor: 'white' }}
+          refreshControl={
+            <RefreshControl
+              refreshing={this.state.refreshing}
+              onRefresh={this.onRefresh}
+            />
+          }
+          contentContainerStyle={{ flexGrow: 1 }}>
+          <FlatList
+            data={this.props.cryptoCurrencyDetails}
+            renderItem={({ item, index }) => this.renderRow(item, index)}
+            keyExtractor={this.keyExtractor}
+            ItemSeparatorComponent={this.FlatListItemSeparator}
+          />
+          <TouchableOpacity
+            onPress={() => this.props.navigation.navigate('AddCryptoCurrency')}
+            style={styles.addButton}>
+            <Text style={styles.addText}>
+              {'+ Add a Cryptocurrency'}
+            </Text>
+          </TouchableOpacity>
+          <View style={{ marginBottom: 50 }}></View>
+        </ScrollView>
+      </>
     );
   }
 }
