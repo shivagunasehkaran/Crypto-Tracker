@@ -1,8 +1,8 @@
 import { combineReducers } from 'redux';
-import CryptoListReducer from './CryptoListReducer';
+import cryptoListReducer from './CryptoListReducer';
 
 const rootReducer = combineReducers({
-  CryptoListReducer,
+  cryptoList: cryptoListReducer,
 });
 
 export default rootReducer;

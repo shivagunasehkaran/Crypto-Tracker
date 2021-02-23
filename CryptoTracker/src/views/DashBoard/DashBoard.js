@@ -9,66 +9,26 @@ import {
 } from 'react-native';
 import { connect } from 'react-redux';
 import * as Images from '../../../src/assets/Images';
-import { fetchCryptoList } from '../../actions/CryptoListActions';
-
-export const data = [
-  {
-    image: Images.Images.bitcoin,
-    name: 'Bitcoin',
-    symbol: 'BTC',
-    amount: '$7,215.68',
-    percentage: '1.83%',
-    status: Images.Images.rise,
-  },
-  {
-    image: Images.Images.ethereum,
-    name: 'Ethereum',
-    symbol: 'ETH',
-    amount: '$146.68',
-    percentage: '1.46%',
-    status: Images.Images.down,
-  },
-  {
-    image: Images.Images.xrp,
-    name: 'XRP',
-    symbol: 'XRP',
-    amount: '$0.220568',
-    percentage: '2.27%',
-    status: Images.Images.rise,
-  },
-  {
-    image: Images.Images.litecoin,
-    name: 'Litecoin',
-    symbol: 'Lite',
-    amount: '$7,215.68',
-    percentage: '1.83%',
-    status: Images.Images.down,
-  },
-  {
-    image: Images.Images.tether,
-    name: 'Tether',
-    symbol: 'Tether',
-    amount: '$146.68',
-    percentage: '1.46%',
-    status: Images.Images.rise,
-  },
-];
+import { fetchCryptoList, fetchIndividualCryptoList } from '../../actions/CryptoListActions';
 
 class DashBoard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       refreshing: false,
+      cryptoValue: 'bitcoin'
     };
   }
 
   componentDidMount = () => {
     this.props.fetchCryptoList();
+    this.props.fetchIndividualCryptoList(this.state.cryptoValue);
   };
 
   onRefresh = () => {
     this.props.fetchCryptoList();
-  }
+    this.props.fetchIndividualCryptoList(this.state.cryptoValue);
+  };
 
   FlatListItemSeparator = () => {
     return (
@@ -82,40 +42,27 @@ class DashBoard extends React.Component {
     );
   };
 
-  renderRow(row, id) {
+  renderRow(row) {
     return (
       <>
-        <View style={{ flex: 1, flexDirection: 'row', margin: 20 }}>
-          <Image style={styles.tinyLogo} source={row.image} />
-          <View style={{ flexDirection: 'column', paddingHorizontal: 20 }}>
-            <View style={{ flexDirection: 'row' }}>
-              <Text style={{ fontSize: 15, marginTop: 5 }}>{row.name}</Text>
-              <Text style={{ fontSize: 15, marginTop: 5, left: 180 }}>
-                {row.amount}
-              </Text>
-            </View>
-            <View style={{ flexDirection: 'row', width: '100%' }}>
-              <Text style={{ fontSize: 12, color: 'gray', marginTop: 5 }}>
+        <View style={styles.container}>
+          <View style={styles.imgContainer}>
+            <Image style={styles.tinyLogo} source={Images.Images.bitcoin} />
+            <View style={styles.text}>
+              <Text style={styles.slug}>{row.slug}</Text>
+              <Text style={styles.symbol}>
                 {row.symbol}
               </Text>
-              <View
-                style={{
-                  width: 50,
-                  flexDirection: 'row',
-                  left: 220,
-                  marginTop: 5,
-                }}>
-                <Image style={styles.statusLogo} source={row.status} />
-                <Text
-                  style={{
-                    fontSize: 12,
-                    color: 'gray',
-                    paddingLeft: 10,
-                  }}>
-                  {row.percentage}
-                </Text>
-              </View>
             </View>
+          </View>
+          <View style={styles.amountContainer}>
+            <Text style={styles.amount}>
+              {'$'}{row.metrics.market_data.price_usd.toFixed(2)}
+            </Text>
+            <Text
+              style={styles.percentage}>
+              {this.props.cryptoPercenrage.market_data.percent_change_usd_last_24_hours.toFixed(2)}{'%'}
+            </Text>
           </View>
         </View>
       </>
@@ -134,42 +81,51 @@ class DashBoard extends React.Component {
         contentContainerStyle={{ flexGrow: 1 }}>
         <View>
           <FlatList
-            data={data}
+            data={this.props.cryptoCurrencyDetails}
             renderItem={({ item, index }) => this.renderRow(item, index)}
             keyExtractor={this.keyExtractor}
             ItemSeparatorComponent={this.FlatListItemSeparator}
           />
           <TouchableOpacity
             onPress={() => this.props.navigation.navigate('AddCryptoCurrency')}
-            style={{ marginTop: 50 }}>
-            <Text style={{ color: '#375675', textAlign: 'center' }}>
+            style={styles.addButton}>
+            <Text style={styles.addText}>
               {'+ Add a Cryptocurrency'}
             </Text>
           </TouchableOpacity>
         </View>
+        <View style={styles.addButton}></View>
       </ScrollView>
     );
   }
 }
 
+const mapStateToProps = (state) => {
+  return {
+    cryptoCurrencyDetails: state.cryptoList.cryptoCurrencyDetails,
+    cryptoPercenrage: state.cryptoList.cryptoPercenrage
+  };
+};
+
 const mapDispatchToProps = (dispatch) => ({
-  fetchCryptoList: () => {
-    dispatch(fetchCryptoList());
-  },
+  fetchCryptoList: () => { dispatch(fetchCryptoList()) },
+  fetchIndividualCryptoList: (state) => { dispatch(fetchIndividualCryptoList(state)) },
 });
 
-export default connect(null, mapDispatchToProps)(DashBoard);
+export default connect(mapStateToProps, mapDispatchToProps)(DashBoard);
 
 const styles = StyleSheet.create({
-  container: {
-    paddingTop: 50,
+  container: { flex: 1, flexDirection: 'row' },
+  imgContainer: { flex: 1, margin: 20, flexDirection: 'row' },
+  tinyLogo: { width: 50, height: 50 },
+  text: { flex: 1, flexDirection: 'column', paddingLeft: 15, marginTop: 5 },
+  slug: { fontSize: 15 },
+  symbol: { fontSize: 12, color: 'gray', marginTop: 5 },
+  amountContainer: { flex: 1, margin: 25 },
+  amount: { fontSize: 15, textAlign: 'right' },
+  percentage: {
+    fontSize: 12, color: 'gray', textAlign: 'right', marginTop: 4
   },
-  tinyLogo: {
-    width: 50,
-    height: 50,
-  },
-  statusLogo: {
-    width: 15,
-    height: 15,
-  },
+  addButton: { marginTop: 50 },
+  addText: { color: '#375675', textAlign: 'center' }
 });
