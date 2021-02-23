@@ -47,7 +47,7 @@ class DashBoard extends React.Component {
         <View style={styles.container}>
           <View style={styles.imgContainer}>
             {/* <Image style={styles.tinyLogo} source={bitcoin} /> */}
-            <Icon name="bitcoin" type="ionicon" size={45} />
+            <Icon name="bitcoin" size={45} />
             <View style={styles.text}>
               <Text style={styles.slug}>{row.slug}</Text>
               <Text style={styles.symbol}>
@@ -59,10 +59,13 @@ class DashBoard extends React.Component {
             <Text style={styles.amount}>
               {'$'}{row.metrics.market_data.price_usd.toFixed(2)}
             </Text>
-            <Text
-              style={styles.percentage}>
-              {this.props.cryptoPercenrage.market_data.percent_change_usd_last_24_hours.toFixed(2)}{'%'}
-            </Text>
+            <View style={styles.percentageImg}>
+              <Icon name="arrow-down" size={12} color="red" style={{ paddingLeft: 100, top: 12 }} />
+              <Text
+                style={styles.percentage}>
+                {this.props.cryptoPercenrage.market_data.percent_change_usd_last_24_hours.toFixed(2)}{'%'}
+              </Text>
+            </View>
           </View>
         </View>
       </>
@@ -119,12 +122,13 @@ const styles = StyleSheet.create({
   imgContainer: { flex: 1, margin: 20, flexDirection: 'row' },
   tinyLogo: { width: 100, height: 100 },
   text: { flex: 1, flexDirection: 'column', paddingLeft: 15, marginTop: 5 },
-  slug: { fontSize: 15 },
-  symbol: { fontSize: 12, color: 'gray', marginTop: 5 },
+  slug: { fontSize: 15, fontWeight: '500' },
+  symbol: { fontSize: 12, color: 'gray', marginTop: 5, fontWeight: '500' },
   amountContainer: { flex: 1, margin: 25 },
-  amount: { fontSize: 15, textAlign: 'right' },
+  amount: { fontSize: 15, textAlign: 'right', fontWeight: '500' },
+  percentageImg: { flex: 1, flexDirection: 'column' },
   percentage: {
-    fontSize: 12, color: 'gray', textAlign: 'right', marginTop: 4
+    fontSize: 12, color: 'gray', textAlign: 'right', color: 'red'
   },
   addButton: { marginTop: 50 },
   addText: { color: '#375675', textAlign: 'center' }
